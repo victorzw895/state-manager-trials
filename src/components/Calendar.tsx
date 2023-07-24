@@ -52,14 +52,17 @@ function ServerDay(props: PickersDayProps<Dayjs> & { highlightedDays?: number[] 
 }
 
 interface CalendarProps {
-  events: Event[],
-  eventDates: number[]
+  highlightedDays: number[],
+  // events: Event[],
 }
 
-const Calendar: React.FC<CalendarProps> = ({events, eventDates}) => {
+const Calendar: React.FC<CalendarProps> = ({highlightedDays}) => {
   // const requestAbortController = React.useRef<AbortController | null>(null);
+  // const [highlightedDays, setHighlightedDays] = React.useState<number[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
-  const [highlightedDays, setHighlightedDays] = React.useState<number[]>([]);
+
+  // console.log('render,', events, highlightedDays)
+
   // const fetchHighlightedDays = (date: Dayjs) => {
   //   const controller = new AbortController();
   //   fakeFetch(date, {
@@ -79,10 +82,10 @@ const Calendar: React.FC<CalendarProps> = ({events, eventDates}) => {
 
   //   requestAbortController.current = controller;
   // };
-  
-  React.useEffect(() => {
-    setHighlightedDays(eventDates)
-  }, [eventDates]);
+  // React.useEffect(() => {
+  //   console.log('events', events)
+  //   setHighlightedDays(events.map(event => dayjs(event.date).get('date')))
+  // }, [events]);
 
   // React.useEffect(() => {
   //   fetchHighlightedDays(initialValue);

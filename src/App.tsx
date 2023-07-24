@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
-import EventForm from './components/EventForm';
 import Events from './components/Events';
-import Calendar from './components/Calendar';
+// import EventForm from './components/EventForm';
+// import Calendar from './components/Calendar';
+import RenderCounter from './util/renderCounter';
 import { eventsData, usersData } from './mock-backend/database';
 import { Event as EventType, User as UserType } from './types';
 import { Stack } from '@mui/material';
-import dayjs, { Dayjs } from 'dayjs';
 
 function App() {
   const [events, setEvents] = useState<EventType[]>([]);
+  // const [highlightedDays, setHighlightedDays] = useState<number[]>([]);
   const [users, setUsers] = useState<UserType[]>([]);
 
   const updateEvents = (value: EventType, index?: number) => {
@@ -49,7 +50,10 @@ function App() {
 
     fetch('/')
       .then(() => eventsData)
-      .then(data => setEvents(data))
+      .then(data => {
+        setEvents(data)
+        // setHighlightedDays(data.map(event => dayjs(event.date).get('date')))
+      })
       .catch(error => console.error(error));
 
     fetch('/')
@@ -69,8 +73,10 @@ function App() {
         // sessionStorage, localStorage
         // persistance, tabs persistance
        */}
+       
+      <RenderCounter componentName='App' />
       <Stack direction='row'>
-        <Calendar events={events} eventDates={events.map(event => dayjs(event.date).get('date'))}/>
+        {/* <Calendar highlightedDays={highlightedDays} /> */}
         <Events
           events={events}
           users={users}

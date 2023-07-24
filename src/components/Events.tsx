@@ -1,8 +1,9 @@
 import { FC, useState, useEffect } from 'react'
 import EventForm from './EventForm'
 import { Event as EventType, User as UserType } from '../types';
-import { Button, Stack, Typography } from '@mui/material';
+import { Button, Stack, Box, Typography } from '@mui/material';
 import EventCard from './EventCard';
+import RenderCounter from '../util/renderCounter';
 
 interface EventsProps {
     events: EventType[],
@@ -18,7 +19,7 @@ const Events: FC<EventsProps> = ({
     updateUser,
 }) => {
     const [createEvent, setCreateEvent] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState<number | null>(null);
+    const [selectedEvent, setSelectedEvent] = useState<number | undefined>(undefined);
 
     const handleSelectEvent = (index: number) => {
         setSelectedEvent(index)
@@ -38,18 +39,41 @@ const Events: FC<EventsProps> = ({
         closeForm()
     }
 
+    const openForm = () => {
+        setSelectedEvent(undefined)
+        setCreateEvent(true)
+    }
+
     const closeForm = () => {
-        setSelectedEvent(null)
+        setSelectedEvent(undefined)
         setCreateEvent(false)
     }
 
   return (
-    <Stack direction='row' spacing={2} sx={{height: '500px', width: '250px'}}>
+    <Stack direction='row' spacing={2} sx={{height: '500px', width: '800px'}}>
+        <Stack sx={{flex: '1 1 0px'}}>
+            <RenderCounter componentName='Event List' />
+            <Typography>Upcoming Events</Typography>
+            <Box sx={{overflow: 'scroll'}}>
+                {
+                    events.length && events.map((event, index) => (
+                        <EventCard
+                            key={index}
+                            index={index}
+                            event={event}
+                            handleSelectEvent={handleSelectEvent}
+                        />
+                    ))
+                }
+                <Button onClick={openForm}>Create Event</Button>
+            </Box>
+        </Stack>
         {
-            createEvent || selectedEvent !== null
+            createEvent || selectedEvent !== undefined
                 ?
                 <EventForm
-                    event={selectedEvent !== null ? events[selectedEvent] : undefined}
+                    id={selectedEvent}
+                    event={selectedEvent !== undefined ? events[selectedEvent] : selectedEvent}
                     users={users}
                     updateEvent={(value: EventType) => updateEvent(value)}
                     updateUser={(value: UserType) => updateUser(value)}
@@ -57,20 +81,7 @@ const Events: FC<EventsProps> = ({
                     closeForm={closeForm}
                 />
                 :
-                <Stack sx={{flexGrow: '1'}}>
-                    <Typography>Upcoming Events</Typography>
-                    {
-                        events.length && events.map((event, index) => (
-                            <EventCard
-                                key={index}
-                                index={index}
-                                event={event}
-                                handleSelectEvent={handleSelectEvent}
-                            />
-                        ))
-                    }
-                    <Button onClick={() => setCreateEvent(true)}>Create Event</Button>
-                </Stack>
+                <></>
         }
     </Stack>
   )

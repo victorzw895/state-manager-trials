@@ -1,4 +1,4 @@
-import { FC, useState, FormEvent } from 'react';
+import { FC, useState, useRef, useEffect, FormEvent } from 'react';
 import { 
     FormLabel,
     FormControl,
@@ -16,8 +16,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateField } from '@mui/x-date-pickers/DateField';
 import { Event, User } from '../types';
 
-const BasicDateField = ({ date }: { date: string | undefined }) => {
-  const [value, setValue] = useState<Dayjs | null>(date ? dayjs(date) : null);
+const BasicDateField = ({ date, id }: { date: string | undefined , id: number | string}) => {
+  // const [value, setValue] = useState<Dayjs | null>(date ? dayjs(date) : null);
 
   return (
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -25,12 +25,14 @@ const BasicDateField = ({ date }: { date: string | undefined }) => {
       <DemoContainer components={['DateField']}>
         <DateField
             label="date"
+            key={`date-${id}`}
             name='date'
             variant='standard'
             format='DD/MM/YYYY'
             required
-            value={value}
-            onChange={(newValue: Dayjs | null) => setValue(newValue)}
+            // value={value}
+            // onChange={(newValue: Dayjs | null) => setValue(newValue)}
+            defaultValue={date ? dayjs(date) : null}
             InputLabelProps={{ shrink: true }}
         />
       </DemoContainer>
@@ -78,20 +80,22 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
   };
 }
 
-const MultipleSelectChip = ({ values }: { values: string[]}) => {
+const MultipleSelectChip = ({ values, id }: { values: string[], id: number | string}) => {
   const theme = useTheme();
   const [personName, setPersonName] = useState<string[]>(values);
 //   const [personName, setPersonName] = useState<string[]>([]);
 
-  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value,
-    );
-  };
+  // const handleChange = (event: SelectChangeEvent<typeof personName>) => {
+  //   const {
+  //     target: { value },
+  //   } = event;
+  //   setPersonName(
+  //     // On autofill we get a stringified value.
+  //     typeof value === 'string' ? value.split(',') : value,
+  //   );
+  // };
+
+  console.log('values', {values})
 
   return (
       <FormControl sx={{ width: '100%' }} variant='standard' >
@@ -101,14 +105,21 @@ const MultipleSelectChip = ({ values }: { values: string[]}) => {
           label='Guests'
           name='guests'
           id="demo-multiple-chip"
+          key={`guests-${id}`}
           multiple
-          value={personName}
-          onChange={handleChange}
+          defaultValue={values}
+          // value={personName}
+          // onChange={handleChange}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-              {selected.map((value) => (
+              {selected.slice(0, 2).map((value) => (
                 <Chip key={value} label={value} />
               ))}
+              {selected.length > 2 ?
+                <Chip key='...' label='...' />
+                  :
+                <></>
+              }
             </Box>
           )}
           MenuProps={MenuProps}
@@ -128,12 +139,13 @@ const MultipleSelectChip = ({ values }: { values: string[]}) => {
 }
 
 interface EventProps {
-    event?: Event,
-    users: User[],
-    updateEvent: (value: Event) => void,
-    updateUser: (value: User) => void,
-    handleSubmit: (event: Event) => Promise<void>,
-    closeForm: () => void,
+  id: number | undefined,
+  event?: Event,
+  users: User[],
+  updateEvent: (value: Event) => void,
+  updateUser: (value: User) => void,
+  handleSubmit: (event: Event) => Promise<void>,
+  closeForm: () => void,
 }
 
 interface FormInputs extends HTMLFormControlsCollection   {
@@ -147,7 +159,7 @@ interface EventFormType extends HTMLFormElement {
   readonly elements: FormInputs;
 }
 
-const Event: FC<EventProps> = ({event = {} as Event, users, updateEvent, handleSubmit, closeForm}) => {
+const Event: FC<EventProps> = ({id = '', event = {} as Event, users, updateEvent, handleSubmit, closeForm}) => {
     const { title, date, guests = [], description } = event;
 
     const handleFormSubmit = async (e: FormEvent<EventFormType>) => {
@@ -163,8 +175,8 @@ const Event: FC<EventProps> = ({event = {} as Event, users, updateEvent, handleS
     }
 
     return (
-        <form onSubmit={handleFormSubmit} style={{flexGrow: '1'}}>
-            <RenderCounter componentName='Event' />
+        <form onSubmit={handleFormSubmit} style={{flex: '1 1 0px'}}>
+            <RenderCounter componentName='EventForm' />
             <FormGroup>
                 <Stack direction='column' spacing={2}>
                     <Box
@@ -178,17 +190,18 @@ const Event: FC<EventProps> = ({event = {} as Event, users, updateEvent, handleS
                       <FormLabel sx={{flexGrow: '1'}}>Event</FormLabel>
                     </Box>
                     <TextField
+                        key={`title-${id}`}
                         label="title"
-                        id='title'
                         name='title'
                         variant="standard"
                         InputLabelProps={{ shrink: true }}
                         defaultValue={title}
                         required
                     />
-                    <BasicDateField date={date} />
-                    <MultipleSelectChip values={guests} />
+                    <BasicDateField id={id} date={date} />
+                    <MultipleSelectChip id={id} values={guests} />
                     <TextField
+                        key={`description-${id}`}
                         label="description"
                         name='description'
                         variant="standard"
