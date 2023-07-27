@@ -8,34 +8,26 @@ import RenderCounter from '../util/renderCounter';
 interface EventsProps {
     events: EventType[],
     users: UserType[],
-    updateEvent: (value: EventType, index?: number) => void,
-    updateUser: (value: UserType, index?: number) => void,
+    handleEventUpdate: (value: EventType) => void,
+    handleUpdateUser: (value: UserType, id?: string) => void,
 }
 
 const Events: FC<EventsProps> = ({
     events,
     users,
-    updateEvent,
-    updateUser,
+    handleEventUpdate,
+    handleUpdateUser,
 }) => {
     const [createEvent, setCreateEvent] = useState(false);
-    const [selectedEvent, setSelectedEvent] = useState<number | undefined>(undefined);
+    const [selectedEvent, setSelectedEvent] = useState<string | undefined>(undefined);
 
-    const handleSelectEvent = (index: number) => {
-        setSelectedEvent(index)
+    const handleSelectEvent = (id: string) => {
+        console.log('id', id)
+        setSelectedEvent(id)
     }
 
-    const handleSubmit = async (event: EventType): Promise<void> => {
-        // update/create Event
-        // update database
-        const requestOptions = {
-            method: 'POST',
-            body: JSON.stringify(event)
-        };
-        const response = await fetch('/', requestOptions);
-        // const data = await response.json();
-
-        updateEvent(event, selectedEvent ?? undefined) // data
+    const handleSubmit = (event: EventType): void => {
+        handleEventUpdate(event) // data
         closeForm()
     }
 
@@ -54,12 +46,11 @@ const Events: FC<EventsProps> = ({
         <Stack sx={{flex: '1 1 0px'}}>
             <RenderCounter componentName='Event List' />
             <Typography>Upcoming Events</Typography>
-            <Box sx={{overflow: 'scroll'}}>
+            <Box sx={{overflow: 'scroll'}}> {/* , overflowY: 'hidden', overflowX: 'hidden' */}
                 {
-                    events.length && events.map((event, index) => (
+                    events.length && events.map((event, i) => (
                         <EventCard
-                            key={index}
-                            index={index}
+                            key={i}
                             event={event}
                             handleSelectEvent={handleSelectEvent}
                         />
@@ -69,14 +60,13 @@ const Events: FC<EventsProps> = ({
             </Box>
         </Stack>
         {
-            createEvent || selectedEvent !== undefined
+            createEvent || selectedEvent
                 ?
                 <EventForm
-                    id={selectedEvent}
-                    event={selectedEvent !== undefined ? events[selectedEvent] : selectedEvent}
+                    event={events.find(event => event.id === selectedEvent)}
                     users={users}
-                    updateEvent={(value: EventType) => updateEvent(value)}
-                    updateUser={(value: UserType) => updateUser(value)}
+                    handleEventUpdate={(value: EventType) => handleEventUpdate(value)}
+                    handleUpdateUser={(value: UserType) => handleUpdateUser(value)}
                     handleSubmit={handleSubmit}
                     closeForm={closeForm}
                 />

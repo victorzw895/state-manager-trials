@@ -1,10 +1,12 @@
 export interface Event {
-    title: string,
-    date: string,
-    guests: string[],
-    description: string
+    id: string;
+    title: string;
+    date: string;
+    guests: string[];
+    description: string;
 }
 
 export interface User {
+    id: string;
     name: string;
 }

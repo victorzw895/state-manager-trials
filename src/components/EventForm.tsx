@@ -82,7 +82,7 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 
 const MultipleSelectChip = ({ values, id }: { values: string[], id: number | string}) => {
   const theme = useTheme();
-  const [personName, setPersonName] = useState<string[]>(values);
+  // const [personName, setPersonName] = useState<string[]>(values);
 //   const [personName, setPersonName] = useState<string[]>([]);
 
   // const handleChange = (event: SelectChangeEvent<typeof personName>) => {
@@ -94,8 +94,6 @@ const MultipleSelectChip = ({ values, id }: { values: string[], id: number | str
   //     typeof value === 'string' ? value.split(',') : value,
   //   );
   // };
-
-  console.log('values', {values})
 
   return (
       <FormControl sx={{ width: '100%' }} variant='standard' >
@@ -128,7 +126,7 @@ const MultipleSelectChip = ({ values, id }: { values: string[], id: number | str
             <MenuItem
               key={name}
               value={name}
-              style={getStyles(name, personName, theme)}
+              style={getStyles(name, values, theme)}
             >
               {name}
             </MenuItem>
@@ -139,12 +137,11 @@ const MultipleSelectChip = ({ values, id }: { values: string[], id: number | str
 }
 
 interface EventProps {
-  id: number | undefined,
   event?: Event,
   users: User[],
-  updateEvent: (value: Event) => void,
-  updateUser: (value: User) => void,
-  handleSubmit: (event: Event) => Promise<void>,
+  handleEventUpdate: (value: Event) => void,
+  handleUpdateUser: (value: User) => void,
+  handleSubmit: (event: Event) => void,
   closeForm: () => void,
 }
 
@@ -159,14 +156,15 @@ interface EventFormType extends HTMLFormElement {
   readonly elements: FormInputs;
 }
 
-const Event: FC<EventProps> = ({id = '', event = {} as Event, users, updateEvent, handleSubmit, closeForm}) => {
-    const { title, date, guests = [], description } = event;
+const Event: FC<EventProps> = ({event = {} as Event, users, handleEventUpdate, handleSubmit, closeForm}) => {
+    const { id, title, date, guests = [], description } = event;
 
-    const handleFormSubmit = async (e: FormEvent<EventFormType>) => {
+    const handleFormSubmit = (e: FormEvent<EventFormType>) => {
       e.preventDefault()
       const form = e.currentTarget.elements;
 
-      await handleSubmit({
+      handleSubmit({
+        id: id || crypto.randomUUID(),
         title: form.title.value,
         date: dayjs(form.date.value, 'DD/MM/YYYY').toISOString(),
         guests: !form.guests.value ? [] : form.guests.value.split(','),
