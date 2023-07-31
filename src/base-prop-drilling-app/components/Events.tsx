@@ -1,17 +1,19 @@
 import { FC, useState, useEffect } from 'react'
 import EventForm from './EventForm'
-import { Event, User } from '../types';
+import { Event, User } from '../../types';
 import { Button, Stack, Box, Typography } from '@mui/material';
 import EventCard from './EventCard';
-import RenderCounter from '../util/renderCounter';
-import { useEvents } from '../state-management/tanstack-query/useEvents';
-// import { useEvents } from './state-management/swr/useEvents';
-import { useUsers } from '../state-management/tanstack-query/useUsers';
+import RenderCounter from '../../util/renderCounter';
 
+interface EventsProps {
+    events: Event[],
+    handleEventUpdate: (value: Event) => void,
+}
 
-const Events: FC = () => {
-    // const { users, putUser: setUsers } = useUsers();
-    const { events, putEvent: setEvents } = useEvents();
+const Events: FC<EventsProps> = ({
+    events,
+    handleEventUpdate,
+}) => {
     const [createEvent, setCreateEvent] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<string | undefined>(undefined);
 
@@ -19,8 +21,8 @@ const Events: FC = () => {
         setSelectedEvent(id)
     }
 
-    const handleSubmit = async (event: Event): Promise<void> => {
-        await setEvents(event)
+    const handleSubmit = (event: Event): void => {
+        handleEventUpdate(event)
         closeForm()
     }
 
@@ -57,6 +59,7 @@ const Events: FC = () => {
                 ?
                 <EventForm
                     event={events.find(event => event.id === selectedEvent)}
+                    handleEventUpdate={(value: Event) => handleEventUpdate(value)}
                     handleSubmit={handleSubmit}
                     closeForm={closeForm}
                 />

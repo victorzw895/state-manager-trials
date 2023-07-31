@@ -8,16 +8,19 @@ import {
     Button,
 } from '@mui/material';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import RenderCounter from '../util/renderCounter';
+import RenderCounter from '../../util/renderCounter';
 import dayjs, { Dayjs } from 'dayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateField } from '@mui/x-date-pickers/DateField';
-import { Event, User } from '../types';
+import { Event, User } from '../../types';
 
 const BasicDateField = ({ date, id }: { date: string | undefined , id: number | string}) => {
+  // const [value, setValue] = useState<Dayjs | null>(date ? dayjs(date) : null);
+
   return (
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DemoContainer components={['DateField']}>
         <DateField
@@ -27,6 +30,8 @@ const BasicDateField = ({ date, id }: { date: string | undefined , id: number | 
             variant='standard'
             format='DD/MM/YYYY'
             required
+            // value={value}
+            // onChange={(newValue: Dayjs | null) => setValue(newValue)}
             defaultValue={date ? dayjs(date) : null}
             InputLabelProps={{ shrink: true }}
         />
@@ -77,6 +82,18 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
 
 const MultipleSelectChip = ({ values, id }: { values: string[], id: number | string}) => {
   const theme = useTheme();
+  // const [personName, setPersonName] = useState<string[]>(values);
+//   const [personName, setPersonName] = useState<string[]>([]);
+
+  // const handleChange = (event: SelectChangeEvent<typeof personName>) => {
+  //   const {
+  //     target: { value },
+  //   } = event;
+  //   setPersonName(
+  //     // On autofill we get a stringified value.
+  //     typeof value === 'string' ? value.split(',') : value,
+  //   );
+  // };
 
   return (
       <FormControl sx={{ width: '100%' }} variant='standard' >
@@ -89,6 +106,8 @@ const MultipleSelectChip = ({ values, id }: { values: string[], id: number | str
           key={`guests-${id}`}
           multiple
           defaultValue={values}
+          // value={personName}
+          // onChange={handleChange}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
               {selected.slice(0, 2).map((value) => (
@@ -119,6 +138,7 @@ const MultipleSelectChip = ({ values, id }: { values: string[], id: number | str
 
 interface EventProps {
   event?: Event,
+  handleEventUpdate: (value: Event) => void,
   handleSubmit: (event: Event) => void,
   closeForm: () => void,
 }
@@ -134,7 +154,7 @@ interface EventFormType extends HTMLFormElement {
   readonly elements: FormInputs;
 }
 
-const Event: FC<EventProps> = ({event = {} as Event, handleSubmit, closeForm}) => {
+const Event: FC<EventProps> = ({event = {} as Event, handleEventUpdate, handleSubmit, closeForm}) => {
     const { id, title, date, guests = [], description } = event;
 
     const handleFormSubmit = (e: FormEvent<EventFormType>) => {
