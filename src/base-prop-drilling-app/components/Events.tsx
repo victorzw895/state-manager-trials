@@ -7,11 +7,13 @@ import RenderCounter from '../../util/renderCounter';
 
 interface EventsProps {
     events: Event[],
+    users: User[],
     handleEventUpdate: (value: Event) => void,
 }
 
 const Events: FC<EventsProps> = ({
     events,
+    users,
     handleEventUpdate,
 }) => {
     const [createEvent, setCreateEvent] = useState(false);
@@ -51,15 +53,15 @@ const Events: FC<EventsProps> = ({
                         />
                     ))
                 }
-                <Button onClick={openForm}>Create Event</Button>
             </Box>
+            <Button onClick={openForm}>Create Event</Button>
         </Stack>
         {
             createEvent || selectedEvent
                 ?
                 <EventForm
                     event={events.find(event => event.id === selectedEvent)}
-                    handleEventUpdate={(value: Event) => handleEventUpdate(value)}
+                    users={users}
                     handleSubmit={handleSubmit}
                     closeForm={closeForm}
                 />

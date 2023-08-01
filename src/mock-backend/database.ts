@@ -6,7 +6,8 @@ const extraEvents = () => {
         title: `title${i}`,
         date: `${2022 + i}-04-27 15:00`,
         guests: ['Van Henry', 'April Tucker', 'Omar Alexander'],
-        description: `extra event ${i}`
+        description: `extra event ${i}`,
+        createdBy: (10 % i).toString()
     }))
 }
 
@@ -31,14 +32,17 @@ export const eventsData: Event[] = [
         title: 'bowling party',
         date: '2022-04-13 19:18',
         guests: ['Van Henry'],
-        description: 'Bowling at holey moley!'
+        description: 'Bowling at holey moley!',
+        createdBy: '1',
     },
     {
         id: 'efghi',
         title: 'Laser tag comp',
         date: '2022-04-15 15:00',
         guests: ['Van Henry', 'April Tucker', 'Omar Alexander'],
-        description: 'Serious laser tag competition. Winner gets 1M'
+        description: 'Serious laser tag competition. Winner gets 1M',
+        createdBy: '2',
+
     },
     ...extraEvents()
 ]

@@ -4,6 +4,7 @@ export interface Event {
     date: string;
     guests: string[];
     description: string;
+    createdBy: string
 }
 
 export interface User {

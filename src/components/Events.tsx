@@ -6,11 +6,9 @@ import EventCard from './EventCard';
 import RenderCounter from '../util/renderCounter';
 import { useEvents } from '../state-management/tanstack-query/useEvents';
 // import { useEvents } from './state-management/swr/useEvents';
-import { useUsers } from '../state-management/tanstack-query/useUsers';
 
 
 const Events: FC = () => {
-    // const { users, putUser: setUsers } = useUsers();
     const { events, putEvent: setEvents } = useEvents();
     const [createEvent, setCreateEvent] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<string | undefined>(undefined);
@@ -49,8 +47,8 @@ const Events: FC = () => {
                         />
                     ))
                 }
-                <Button onClick={openForm}>Create Event</Button>
             </Box>
+            <Button onClick={openForm}>Create Event</Button>
         </Stack>
         {
             createEvent || selectedEvent

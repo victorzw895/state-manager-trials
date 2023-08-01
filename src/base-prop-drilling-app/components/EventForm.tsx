@@ -16,7 +16,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateField } from '@mui/x-date-pickers/DateField';
 import { Event, User } from '../../types';
 
-const BasicDateField = ({ date, id }: { date: string | undefined , id: number | string}) => {
+const BasicDateField = ({ date, id, disabled }: { date: string | undefined , id: number | string, disabled: boolean}) => {
   // const [value, setValue] = useState<Dayjs | null>(date ? dayjs(date) : null);
 
   return (
@@ -34,6 +34,7 @@ const BasicDateField = ({ date, id }: { date: string | undefined , id: number | 
             // onChange={(newValue: Dayjs | null) => setValue(newValue)}
             defaultValue={date ? dayjs(date) : null}
             InputLabelProps={{ shrink: true }}
+            disabled={disabled}
         />
       </DemoContainer>
     </LocalizationProvider>
@@ -58,19 +59,6 @@ const MenuProps = {
   },
 };
 
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
-];
-
 function getStyles(name: string, personName: readonly string[], theme: Theme) {
   return {
     fontWeight:
@@ -80,20 +68,8 @@ function getStyles(name: string, personName: readonly string[], theme: Theme) {
   };
 }
 
-const MultipleSelectChip = ({ values, id }: { values: string[], id: number | string}) => {
+const MultipleSelectChip = ({ values, users, id, disabled }: { values: string[], users: User[], id: number | string, disabled: boolean}) => {
   const theme = useTheme();
-  // const [personName, setPersonName] = useState<string[]>(values);
-//   const [personName, setPersonName] = useState<string[]>([]);
-
-  // const handleChange = (event: SelectChangeEvent<typeof personName>) => {
-  //   const {
-  //     target: { value },
-  //   } = event;
-  //   setPersonName(
-  //     // On autofill we get a stringified value.
-  //     typeof value === 'string' ? value.split(',') : value,
-  //   );
-  // };
 
   return (
       <FormControl sx={{ width: '100%' }} variant='standard' >
@@ -106,8 +82,7 @@ const MultipleSelectChip = ({ values, id }: { values: string[], id: number | str
           key={`guests-${id}`}
           multiple
           defaultValue={values}
-          // value={personName}
-          // onChange={handleChange}
+          disabled={disabled}
           renderValue={(selected) => (
             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
               {selected.slice(0, 2).map((value) => (
@@ -122,7 +97,7 @@ const MultipleSelectChip = ({ values, id }: { values: string[], id: number | str
           )}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
+          {users.map(({name}) => (
             <MenuItem
               key={name}
               value={name}
@@ -138,7 +113,7 @@ const MultipleSelectChip = ({ values, id }: { values: string[], id: number | str
 
 interface EventProps {
   event?: Event,
-  handleEventUpdate: (value: Event) => void,
+  users: User[],
   handleSubmit: (event: Event) => void,
   closeForm: () => void,
 }
@@ -154,8 +129,17 @@ interface EventFormType extends HTMLFormElement {
   readonly elements: FormInputs;
 }
 
-const Event: FC<EventProps> = ({event = {} as Event, handleEventUpdate, handleSubmit, closeForm}) => {
-    const { id, title, date, guests = [], description } = event;
+const Event: FC<EventProps> = ({event = {} as Event, users, handleSubmit, closeForm}) => {
+    const { id, title, date, guests = [], description, createdBy } = event;
+    const [isDisabled, setIsDisabled] = useState(false);
+
+    useEffect(() => {
+      const userId = localStorage.getItem('userId');
+
+      if (userId !== createdBy) {
+        setIsDisabled(true)
+      }
+    }, [])
 
     const handleFormSubmit = (e: FormEvent<EventFormType>) => {
       e.preventDefault()
@@ -167,6 +151,7 @@ const Event: FC<EventProps> = ({event = {} as Event, handleEventUpdate, handleSu
         date: dayjs(form.date.value, 'DD/MM/YYYY').toISOString(),
         guests: !form.guests.value ? [] : form.guests.value.split(','),
         description: form.description.value,
+        createdBy: createdBy || localStorage.getItem('userId')!
       })
     }
 
@@ -193,9 +178,10 @@ const Event: FC<EventProps> = ({event = {} as Event, handleEventUpdate, handleSu
                         InputLabelProps={{ shrink: true }}
                         defaultValue={title}
                         required
+                        disabled={isDisabled}
                     />
-                    <BasicDateField id={id} date={date} />
-                    <MultipleSelectChip id={id} values={guests} />
+                    <BasicDateField id={id} date={date} disabled={isDisabled} />
+                    <MultipleSelectChip id={id} users={users} values={guests} disabled={isDisabled} />
                     <TextField
                         key={`description-${id}`}
                         label="description"
@@ -205,6 +191,7 @@ const Event: FC<EventProps> = ({event = {} as Event, handleEventUpdate, handleSu
                         multiline
                         rows={4}
                         defaultValue={description}
+                        disabled={isDisabled}
                     />  
                     <Button type='submit' variant="contained">Save Event</Button>
                 </Stack>
