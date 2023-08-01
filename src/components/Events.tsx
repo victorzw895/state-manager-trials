@@ -1,15 +1,17 @@
-import { FC, useState, useEffect } from 'react'
+import { FC, useState } from 'react'
 import EventForm from './EventForm'
-import { Event, User } from '../types';
-import { Button, Stack, Box, Typography } from '@mui/material';
+import { Event } from '../types';
+import { Button } from '@mui/material';
 import EventCard from './EventCard';
-import RenderCounter from '../util/renderCounter';
 import { useEvents } from '../state-management/tanstack-query/useEvents';
 // import { useEvents } from './state-management/swr/useEvents';
+import EventsComponent from './common/EventsComponent';
 
 
 const Events: FC = () => {
+    // 👀 ✅ DATA FETCHED STATE
     const { events, putEvent: setEvents } = useEvents();
+
     const [createEvent, setCreateEvent] = useState(false);
     const [selectedEvent, setSelectedEvent] = useState<string | undefined>(undefined);
 
@@ -33,24 +35,18 @@ const Events: FC = () => {
     }
 
   return (
-    <Stack direction='row' spacing={2} sx={{height: '500px', width: '800px'}}>
-        <Stack sx={{flex: '1 1 0px'}}>
-            <RenderCounter componentName='Event List' />
-            <Typography>Upcoming Events</Typography>
-            <Box sx={{overflow: 'scroll'}}> {/* , overflowY: 'hidden', overflowX: 'hidden' */}
-                {
-                    events.length && events.map((event, i) => (
-                        <EventCard
-                            key={i}
-                            event={event}
-                            handleSelectEvent={handleSelectEvent}
-                        />
-                    ))
-                }
-            </Box>
-            <Button onClick={openForm}>Create Event</Button>
-        </Stack>
-        {
+    <EventsComponent
+        eventsChild={
+            events.length && events.map((event, i) => (
+                <EventCard
+                    key={i}
+                    event={event}
+                    handleSelectEvent={handleSelectEvent}
+                />
+            ))
+        }
+        createEventChild={<Button onClick={openForm}>Create Event</Button>}
+        eventFormChild={
             createEvent || selectedEvent
                 ?
                 <EventForm
@@ -61,7 +57,7 @@ const Events: FC = () => {
                 :
                 <></>
         }
-    </Stack>
+    />
   )
 }
 

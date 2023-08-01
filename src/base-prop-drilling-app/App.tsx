@@ -1,21 +1,13 @@
 import '../App.css'
 import Events from './components/Events';
-import RenderCounter from '../util/renderCounter';
+import Contacts from './components/Contacts';
+import AppComponent from '../components/common/AppComponent';
 import { Event, User } from '../types';
-import { Button, FormGroup, Stack, TextField } from '@mui/material';
-import { FormEvent, useEffect, useState } from 'react';
+import { Stack } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { getEventsRequest, putEventRequest } from '../api/events';
 import { getUsersRequest, putUserRequest } from '../api/users';
-import Contacts from './components/Contacts';
-
-interface FormInputs extends HTMLFormControlsCollection   {
-  username: HTMLInputElement;
-  password: HTMLInputElement;
-}
- 
-interface EventFormType extends HTMLFormElement {
-  readonly elements: FormInputs;
-}
+import Login from './components/Login';
 
 function App() {
   const [ users, setUsers ] = useState<User[]>([]);
@@ -26,14 +18,6 @@ function App() {
     const userId = localStorage.getItem('userId');
     setLoggedUserId(userId);
   }, [])
-
-  const handleLoginSubmit = (e: FormEvent<EventFormType>) => {
-    e.preventDefault();
-    const form = e.currentTarget.elements;
-
-    setLoggedUserId('1')
-    localStorage.setItem('userId', '1');
-  }
 
   useEffect(() => {
       void (async () => {
@@ -79,47 +63,22 @@ function App() {
   }
 
   return (
-    <>
+    <AppComponent>
       {
         loggedUserId ?
-          <>
-            <RenderCounter componentName='App' />
-            <Stack direction='row'>
+          <Stack direction='row'>
+              {/* <Calendar highlightedDays={highlightedDays} /> */}
               <Contacts users={users} />
               <Events
                 events={events}
                 users={users}
                 handleEventUpdate={handleEventUpdate}
               />
-            </Stack>
-          </>
+          </Stack>
             :
-            <form onSubmit={handleLoginSubmit} style={{flex: '1 1 0px'}}>
-              <RenderCounter componentName='EventForm' />
-              <FormGroup>
-                  <Stack direction='column' spacing={2}>
-                      <TextField
-                          label='username'
-                          name='username'
-                          variant='standard'
-                          InputLabelProps={{ shrink: true }}
-                          defaultValue={''}
-                          required
-                      />
-                      <TextField
-                          label='password'
-                          name='password'
-                          variant='standard'
-                          InputLabelProps={{ shrink: true }}
-                          defaultValue={''}
-                          required
-                      />
-                      <Button type='submit' variant="contained">Login</Button>
-                  </Stack>
-              </FormGroup>
-          </form>
+          <Login setLoggedUserId={setLoggedUserId} />
       }
-    </>
+    </AppComponent>
   )
 }
 

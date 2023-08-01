@@ -1,6 +1,8 @@
 import { FC, useEffect, useRef } from 'react';
 import { Typography } from '@mui/material';
 
+const renderCounterOff = true;
+
 interface RenderCounterProps {
     componentName: string
 }
@@ -28,6 +30,8 @@ const RenderCounter: FC<RenderCounterProps> = ({componentName}) => {
             fullyStrictMounted.current = true;
         }
     }, [])
+
+    if (renderCounterOff) return <></>
 
     return (
         <Typography

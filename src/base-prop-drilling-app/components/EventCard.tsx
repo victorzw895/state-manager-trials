@@ -1,26 +1,17 @@
-import { Card, Typography } from '@mui/material';
 import { Event } from '../../types';
 import { FC } from 'react';
-import dayjs, { Dayjs } from 'dayjs';
-import RenderCounter from '../../util/renderCounter';
+import EventCardComponent from '../../components/common/EventCardComponent';
 
 interface EventCardProps {
     event: Event,
     handleSelectEvent: (id: string) => void,
 }
 
+// 👀 ⛔️ PROP DRILLING
 const EventCard: FC<EventCardProps> = ({event, handleSelectEvent}) => {
-    const {id, title, date} = event;
 
     return (
-        <Card
-            sx={{p: '8px', textAlign: 'left', flexShrink: '0'}}
-            onClick={() => handleSelectEvent(id)}
-        >
-            <RenderCounter componentName={`Event-${id}`} />
-            <Typography variant='h6'>{title}</Typography>
-            <Typography variant='body1'>{dayjs(date).format('DD/MM/YYYY')}</Typography>
-        </Card>
+        <EventCardComponent event={event} handleSelectEvent={handleSelectEvent} />
     )
 }
 

@@ -1,9 +1,9 @@
-import { FC, useState, useEffect } from 'react'
+import { FC, useState } from 'react'
 import EventForm from './EventForm'
 import { Event, User } from '../../types';
-import { Button, Stack, Box, Typography } from '@mui/material';
+import { Button } from '@mui/material';
 import EventCard from './EventCard';
-import RenderCounter from '../../util/renderCounter';
+import EventsComponent from '../../components/common/EventsComponent';
 
 interface EventsProps {
     events: Event[],
@@ -11,6 +11,7 @@ interface EventsProps {
     handleEventUpdate: (value: Event) => void,
 }
 
+// 👀 ⛔️ PROP DRILLING
 const Events: FC<EventsProps> = ({
     events,
     users,
@@ -39,24 +40,18 @@ const Events: FC<EventsProps> = ({
     }
 
   return (
-    <Stack direction='row' spacing={2} sx={{height: '500px', width: '800px'}}>
-        <Stack sx={{flex: '1 1 0px'}}>
-            <RenderCounter componentName='Event List' />
-            <Typography>Upcoming Events</Typography>
-            <Box sx={{overflow: 'scroll'}}> {/* , overflowY: 'hidden', overflowX: 'hidden' */}
-                {
-                    events.length && events.map((event, i) => (
-                        <EventCard
-                            key={i}
-                            event={event}
-                            handleSelectEvent={handleSelectEvent}
-                        />
-                    ))
-                }
-            </Box>
-            <Button onClick={openForm}>Create Event</Button>
-        </Stack>
-        {
+    <EventsComponent
+        eventsChild={
+            events.length && events.map((event, i) => (
+                <EventCard
+                    key={i}
+                    event={event}
+                    handleSelectEvent={handleSelectEvent}
+                />
+            ))
+        }
+        createEventChild={<Button onClick={openForm}>Create Event</Button>}
+        eventFormChild={
             createEvent || selectedEvent
                 ?
                 <EventForm
@@ -68,7 +63,7 @@ const Events: FC<EventsProps> = ({
                 :
                 <></>
         }
-    </Stack>
+    />
   )
 }
 
