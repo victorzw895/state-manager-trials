@@ -1,24 +1,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import PropDrillApp from './base-prop-drilling-app/App.tsx'
 import './index.css'
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { CounterContextProvider } from './util/CounterContext.tsx'
 // import CssBaseline from '@mui/material/CssBaseline';
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query';
 
-const queryClient = new QueryClient(
-  // {
-  //   defaultOptions: {
-  //     queries: {
-  //       queryFn: defaultQueryFn,
-  //     },
-  //   },
-  // }
-);
+// import PropDrillApp from './base-prop-drilling-app/App.tsx'
+// import App from './App.tsx';
+
+import ServerStateProvider from './state-management/tanstack-query/Provider.tsx';
+
+import ClientStateProvider from './react-context/Provider.tsx';
+import App from './react-context/App.tsx';
 
 const darkTheme = createTheme({
   palette: {
@@ -29,10 +22,14 @@ const darkTheme = createTheme({
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider theme={darkTheme}>
-      {/* <CssBaseline /> */}
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
+      {/* <CounterContextProvider> */}
+        {/* <CssBaseline /> */}
+        <ServerStateProvider>
+          <ClientStateProvider>
+            <App />
+          </ClientStateProvider>
+        </ServerStateProvider>
+      {/* </CounterContextProvider> */}
     </ThemeProvider>
   </React.StrictMode>,
 )

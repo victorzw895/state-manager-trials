@@ -4,3 +4,22 @@
   padding: 2rem;
   text-align: center;
 }
+
+.anim {
+  animation-name: color_change;
+  animation-duration: 0.5s;
+  animation-iteration-count: initial;
+}
+
+@keyframes color_change {
+  from {
+    border-color: blue;
+    font-weight: initial;
+  }
+
+  to {
+    border-color: red;
+    font-weight: 700;
+    color: red;
+  }
+}

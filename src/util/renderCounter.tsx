@@ -1,13 +1,17 @@
 import { FC, useEffect, useRef } from 'react';
 import { Typography } from '@mui/material';
+// import { useCounterContextDispatch } from './CounterContext';
 
-const renderCounterOff = true;
+const renderCounterOff = false;
 
 interface RenderCounterProps {
     componentName: string
 }
 
+const colours = ['red', 'blue', 'green']
+
 const RenderCounter: FC<RenderCounterProps> = ({componentName}) => {
+    // const { appRenderCount } = useCounterContextDispatch();
     const renderCount = useRef(1);
     const fullyStrictMounted = useRef(false);
 
@@ -35,8 +39,16 @@ const RenderCounter: FC<RenderCounterProps> = ({componentName}) => {
 
     return (
         <Typography
+            className='anim'
+            key={`render-${renderCount.current}`}
             sx={{
-                border: '1px solid black',
+                border: `1px solid ${colours[renderCount.current % 3]}`,
+                // border: `1px solid ${
+                //     appRenderCount.current === renderCount.current ? 'red' : 
+                //     appRenderCount.current - renderCount.current === 1 ? 'orange' :
+                //     appRenderCount.current - renderCount.current === 2 ? 'yellow' :
+                //     'transparent'
+                // }`,
             }}
         >
             {`${renderCount.current <= 1 ? '' : 're-'}render ${componentName}: x${renderCount.current}`}

@@ -18,6 +18,7 @@ const MultipleSelectChip: FC<MultipleSelectChipProps> = ({ values, id, disabled 
     <MultipleSelectChipComponent id={id} values={values} disabled={disabled}>
         {users.map(({name}) => (
             <MenuItem
+                key={id}
                 name={name}
                 values={values}
             />

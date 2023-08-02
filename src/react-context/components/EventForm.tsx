@@ -1,21 +1,22 @@
 import { FC, useState, useEffect } from 'react';
-import { Event, User } from '../../types';
+import { Event } from '../../types';
+
 import EventFormComponent from '../../components/common/EventFormComponent';
 import DateField from './DateField';
 import MultipleSelect from './MultipleSelect';
 import TextInput from './TextInput';
+import { useContextDispatch } from '../useDispatch';
 
-interface EventProps {
+export interface EventProps {
   event?: Event,
-  users: User[],
   handleSubmit: (event: Event) => void,
   closeForm: () => void,
 }
 
 // 👀 ⛔️ PROP DRILLING
-const Event: FC<EventProps> = ({event = {} as Event, users, handleSubmit, closeForm}) => {
+const Event: FC<EventProps> = ({event = {} as Event, handleSubmit, closeForm}) => {
     const { id, title, date, guests = [], description, createdBy } = event;
-    const [isDisabled, setIsDisabled] = useState(false);
+    const { setIsDisabled } = useContextDispatch();
 
     useEffect(() => {
       const userId = localStorage.getItem('userId');
@@ -32,10 +33,14 @@ const Event: FC<EventProps> = ({event = {} as Event, users, handleSubmit, closeF
         handleSubmit={handleSubmit}
         closeForm={closeForm}
       >
-        <TextInput id={id} title={title} disabled={isDisabled} />
-        <DateField id={id} date={date} disabled={isDisabled} />
-        <MultipleSelect id={id} values={guests} users={users} disabled={isDisabled} />
-        <TextInput id={id} description={description} disabled={isDisabled} />
+        {/* 👀 ✅ Remove PROP DRILLING here - `disabled={isDisabled}` */}
+        <TextInput id={id} title={title} />
+        {/* 👀 ✅ Remove PROP DRILLING here - `disabled={isDisabled}` */}
+        <DateField id={id} date={date} />
+        {/* 👀 ✅ Remove PROP DRILLING here - `disabled={isDisabled}` */}
+        <MultipleSelect id={id} values={guests} />
+        {/* 👀 ✅ Remove PROP DRILLING here - `disabled={isDisabled}` */}
+        <TextInput id={id} description={description} />
       </EventFormComponent>
     )
 }

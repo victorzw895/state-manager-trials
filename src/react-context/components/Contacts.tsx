@@ -1,7 +1,7 @@
 import { FC } from 'react'
-import { useUsers } from '../state-management/tanstack-query/useUsers';
 import ContactCard from './ContactCard';
-import ContactsComponent from './common/ContactsComponent';
+import ContactsComponent from '../../components/common/ContactsComponent';
+import { useUsers } from '../../state-management/tanstack-query/useUsers';
 
 
 const Contacts: FC = () => {

@@ -1,6 +1,6 @@
-import { User } from '../types';
+import ContactCardComponent from '../../components/common/ContactCardComponent';
+import { User } from '../../types';
 import { FC } from 'react';
-import ContactCardComponent from './common/ContactCardComponent';
 
 export interface ContactCardProps {
     user: User,

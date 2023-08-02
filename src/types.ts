@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface Event {
     id: string;
     title: string;
@@ -20,5 +22,14 @@ interface FormInputs extends HTMLFormControlsCollection   {
 }
  
 export interface EventFormType extends HTMLFormElement {
+  readonly elements: FormInputs;
+}
+
+interface FormInputs extends HTMLFormControlsCollection   {
+  username: HTMLInputElement;
+  password: HTMLInputElement;
+}
+ 
+export interface LoginFormType extends HTMLFormElement {
   readonly elements: FormInputs;
 }

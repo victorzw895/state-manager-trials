@@ -1,10 +1,10 @@
 import { FC, useState, useEffect } from 'react';
 import { Event } from '../types';
 
+import EventFormComponent from './common/EventFormComponent';
 import DateField from './DateField';
 import MultipleSelect from './MultipleSelect';
-import EventFormComponent from './common/EventFormComponent';
-import TextField from './common/TextFieldComponent';
+import TextInput from './TextInput';
 
 export interface EventProps {
   event?: Event,
@@ -12,6 +12,7 @@ export interface EventProps {
   closeForm: () => void,
 }
 
+// 👀 ⛔️ PROP DRILLING
 const Event: FC<EventProps> = ({event = {} as Event, handleSubmit, closeForm}) => {
     const { id, title, date, guests = [], description, createdBy } = event;
     const [isDisabled, setIsDisabled] = useState(false);
@@ -31,10 +32,10 @@ const Event: FC<EventProps> = ({event = {} as Event, handleSubmit, closeForm}) =
           handleSubmit={handleSubmit}
           closeForm={closeForm}
         >
-          <TextField id={id} title={title} disabled={isDisabled} />
+          <TextInput id={id} title={title} disabled={isDisabled} />
           <DateField id={id} date={date} disabled={isDisabled} />
           <MultipleSelect id={id} values={guests} disabled={isDisabled} />
-          <TextField id={id} description={description} disabled={isDisabled} />
+          <TextInput id={id} description={description} disabled={isDisabled} />
         </EventFormComponent>
     )
 }

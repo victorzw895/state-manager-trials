@@ -1,20 +1,22 @@
 import { FC } from 'react';
-import { User } from '../../types';
 import MultipleSelectChipComponent from '../../components/common/MultipleSelectComponent';
+import { useUsers } from '../../state-management/tanstack-query/useUsers';
 import MenuItem from '../../components/common/MenuItem';
+import { useContextDispatch } from '../useDispatch';
 
 export interface MultipleSelectChipProps {
     values: string[];
-    users: User[];
     id: string;
-    disabled: boolean;
 }
 
-// 👀 ⛔️ PROP DRILLING
-const MultipleSelectChip: FC<MultipleSelectChipProps> = ({ values, users, id, disabled }) => {
+// 👀 ✅ PROP DRILLING - removed `disabled` prop
+const MultipleSelectChip: FC<MultipleSelectChipProps> = ({ values, id }) => {
+  // 👀 ✅ DATA FETCHED STATE
+  const { users } = useUsers();
+  const { isDisabled } = useContextDispatch();
 
   return (
-    <MultipleSelectChipComponent id={id} values={values} disabled={disabled}>
+    <MultipleSelectChipComponent id={id} values={values} disabled={isDisabled}>
         {users.map(({name}) => (
             <MenuItem
                 key={id}

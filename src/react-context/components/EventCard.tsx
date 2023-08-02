@@ -1,6 +1,6 @@
-import { Event } from '../types';
+import EventCardComponent from '../../components/common/EventCardComponent';
+import { Event } from '../../types';
 import { FC } from 'react';
-import EventCardComponent from './common/EventCardComponent';
 
 export interface EventCardProps {
     event: Event,
